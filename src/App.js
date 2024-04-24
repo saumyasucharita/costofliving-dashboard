@@ -17,9 +17,9 @@ console.log('Starting front-end project');
 	foodHeight: '28.06%',
 	}
 	]);*/
-
+const [city_data, setCityData] = useState([]);
 const [cost_data, setCostData] = useState([]);
-const [selectedContinent, setSelectedContinent] = useState(null);
+const [selectedContinent, setSelectedContinent] = useState('Select');
 
 const yAxisLabels = []
 for (let i = 6000; i >= 500; i -= 500) {
@@ -38,34 +38,12 @@ function fetchCityJSONData() {
         .then((data) => {
            //console.log(data);
            //const first_10_cities = data.slice(0, 10);
-           const first_10_cities = data;
-           console.log(first_10_cities);
-           const bar_height_data = []
-           for(let cityData of first_10_cities)
-           {
-           	const entry = {};
-        	
-        	//Calculate total living expense for the month
-        	let totalSum = parseFloat(cityData['rent']) + parseFloat(cityData['utilities']) + parseFloat(cityData['meal']*60);
-        	let barHeight = totalSum/6000 * 100;
-		
-		//Set object properties like total bar-height
-		entry.totalHeight = barHeight;
-		entry.rent = cityData['rent'];
-		entry.cityName = cityData['city'];
-		entry.rentHeight = parseFloat(cityData['rent'])/totalSum * 100;
-		entry.utilitiesHeight = parseFloat(cityData['utilities'])/totalSum * 100;
-		entry.foodHeight = parseFloat(cityData['meal']*60)/totalSum * 100;
-		
-		//console.log(entry);
-		bar_height_data.push(entry);
-        	
-           }
-           console.log(bar_height_data);
+           setCityData(data);
+           const bar_height_data = setBarHeight(data);
            setCostData(bar_height_data);
                     
-           const filteredData = data.filter(city => city.continent === selectedContinent);
-           console.log(`Filtered data for ${selectedContinent}`, filteredData.slice(0, 10));
+           /*const filteredData = data.filter(city => city.continent === selectedContinent);
+           console.log(`Filtered data for ${selectedContinent}`, filteredData.slice(0, 10)); */
                   
                     
         })
@@ -78,25 +56,64 @@ useEffect(() => {
         console.log('Page rendering starts');
         fetchCityJSONData();
     }, []);
-
+function setBarHeight(jsonData){
+   const bar_height_data = []
+   for(let cityData of jsonData)
+   {
+   	const entry = {};
+	
+	//Calculate total living expense for the month
+	let totalSum = parseFloat(cityData['rent']) + parseFloat(cityData['utilities']) + parseFloat(cityData['meal']*60);
+	let barHeight = totalSum/6000 * 100;
+	
+	//Set object properties like total bar-height
+	entry.totalHeight = barHeight;
+	entry.rent = cityData['rent'];
+	entry.cityName = cityData['city'];
+	entry.rentHeight = parseFloat(cityData['rent'])/totalSum * 100;
+	entry.utilitiesHeight = parseFloat(cityData['utilities'])/totalSum * 100;
+	entry.foodHeight = parseFloat(cityData['meal']*60)/totalSum * 100;
+	
+	//console.log(entry);
+	bar_height_data.push(entry);
+	
+   }
+   console.log(bar_height_data);
+   return bar_height_data;
+}
+/*useEffect(() => {
+    if (selectedContinent !== 'Select') {
+      // Filter JSON data based on selected continent
+      const filtered = city_data.filter(obj => obj.continent === selectedContinent);
+      setCityData(filtered);
+      
+      const new_bar_height = setBarHeight(filtered);
+      setCostData(new_bar_height);
+    } else {
+      setCityData([]);
+    }
+  }, [selectedContinent]); */
 function onContinentChange(ev) {
     // Will be used by challenge 5
-    const value = ev.target.value;
-    console.log('Continent selected', value);
+    const continent = ev.target.value;
+    console.log('Continent selected', continent);
     /*if (value === 'all') {
       setLimitBy(false); // if "all" is selected, set to false
     } else { // otherwise, just set with value
       setLimitBy(value);
     }*/
-    setSelectedContinent(value);
-    fetchCityJSONData();
+    setSelectedContinent(continent);
+    const filtered = city_data.filter(obj => obj.continent === continent);
+      
+    const new_bar_height = setBarHeight(filtered);
+    setCostData(new_bar_height);
   }
 
   return (
  <div className="row">
    <h1>Cost of living in cities</h1>
    <label> Select Continent:
-          <select onChange={onContinentChange}>
+          <select onChange={onContinentChange} value={selectedContinent}>
             <option value="Select">Select</option>
             {
             	continents.map(continent => (
