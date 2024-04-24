@@ -28,7 +28,7 @@ for (let i = 6000; i >= 500; i -= 500) {
 const continents = ["Asia", "Europe", "Africa", "North America", "South America", "Oceania"];
 function fetchCityJSONData() {
  console.log('In fetch function');	
-    return fetch("./cost_of_living_data.json")
+    return fetch("./merged_data.json")
         .then((res) => {
             if (!res.ok) {
                 throw new Error(`HTTP error! Status: ${res.status}`);
@@ -37,29 +37,25 @@ function fetchCityJSONData() {
         })
         .then((data) => {
            //console.log(data);
-           const first_10_cities = data.slice(0, 10);
+           //const first_10_cities = data.slice(0, 10);
+           const first_10_cities = data;
            console.log(first_10_cities);
            const bar_height_data = []
            for(let cityData of first_10_cities)
            {
            	const entry = {};
-           	/*console.log('Each city data', cityData);
-           	console.log('For city', cityData['city']);
-        	console.log('Apartment rent is: ', cityData['x48']);
-        	console.log('Utilities: ', cityData['x36']);
-        	console.log('Meal cost for 60 meals: ', cityData['x1']*60);*/
         	
         	//Calculate total living expense for the month
-        	let totalSum = parseFloat(cityData['x48']) + parseFloat(cityData['x36']) + parseFloat(cityData['x1']*60);
+        	let totalSum = parseFloat(cityData['rent']) + parseFloat(cityData['utilities']) + parseFloat(cityData['meal']*60);
         	let barHeight = totalSum/6000 * 100;
 		
 		//Set object properties like total bar-height
 		entry.totalHeight = barHeight;
-		entry.rent = cityData['x48'];
+		entry.rent = cityData['rent'];
 		entry.cityName = cityData['city'];
-		entry.rentHeight = parseFloat(cityData['x48'])/totalSum * 100;
-		entry.utilitiesHeight = parseFloat(cityData['x36'])/totalSum * 100;
-		entry.foodHeight = parseFloat(cityData['x1']*60)/totalSum * 100;
+		entry.rentHeight = parseFloat(cityData['rent'])/totalSum * 100;
+		entry.utilitiesHeight = parseFloat(cityData['utilities'])/totalSum * 100;
+		entry.foodHeight = parseFloat(cityData['meal']*60)/totalSum * 100;
 		
 		//console.log(entry);
 		bar_height_data.push(entry);
@@ -67,73 +63,12 @@ function fetchCityJSONData() {
            }
            console.log(bar_height_data);
            setCostData(bar_height_data);
-           
-           // Fetch country-by-continent data
-           fetch('https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-continent.json')
-                .then(mapping_data => {
-                    if (!mapping_data.ok) {
-                        throw new Error(`HTTP error in fetching external json data! Status: ${mapping_data.status}`);
-                    }
-                    return mapping_data.json();
-                })
-                .then(continentData => {
-                    console.log('Country by continent data:', continentData);
                     
-                    // Merge city data and continent data
-        	    const mergedData = data.map(city => {
-                    const continentInfo = continentData.find(item => item.country === city.country);
-                    return {
-                        ...city,
-                        continent: continentInfo ? continentInfo.continent : 'Unknown',
-                     };
-                  });
-
-                  console.log('Merged data:', mergedData);
+           const filteredData = data.filter(city => city.continent === selectedContinent);
+           console.log(`Filtered data for ${selectedContinent}`, filteredData.slice(0, 10));
                   
-                  const filteredData = mergedData.filter(city => city.continent === selectedContinent);
-                  console.log(`Filtered data for ${selectedContinent}`, filteredData.slice(0, 10));
-                  
-                  
-           	/*const bar_height_data = []
-          	for(let cityData of filteredData)
-		   {
-		   	const entry = {};
-		   	/*console.log('Each city data', cityData);
-		   	console.log('For city', cityData['city']);
-			console.log('Apartment rent is: ', cityData['x48']);
-			console.log('Utilities: ', cityData['x36']);
-			console.log('Meal cost for 60 meals: ', cityData['x1']*60);*/
-			
-			//Calculate total living expense for the month
-			/*let totalSum = parseFloat(cityData['x48']) + parseFloat(cityData['x36']) + parseFloat(cityData['x1']*60);
-			let barHeight = totalSum/6000 * 100;
-			
-			//Set object properties like total bar-height
-			entry.totalHeight = barHeight;
-			entry.rent = cityData['x48'];
-			entry.cityName = cityData['city'];
-			entry.rentHeight = parseFloat(cityData['x48'])/totalSum * 100;
-			entry.utilitiesHeight = parseFloat(cityData['x36'])/totalSum * 100;
-			entry.foodHeight = parseFloat(cityData['x1']*60)/totalSum * 100;
-			
-			//console.log(entry);
-			bar_height_data.push(entry);
-			
-		   }
-		   console.log(bar_height_data);
-		   setCostData(bar_height_data);*/
-                  
-                   /* for (let city of data) {
-            		for (let country in continentData) {
-            			console.log('In nested for loop');
-                		if (city.country === country.country) {
-                    		  console.log(`Country: ${city.country}, Continent: ${country.continent}`);
-                    		  break; // Found the continent for this city, no need to check further
-                }
-            }
-        }*/
-                    })
-           })
+                    
+        })
         .catch((error) => {
             console.error("Error fetching or parsing data:", error);
             throw error; 
@@ -154,6 +89,7 @@ function onContinentChange(ev) {
       setLimitBy(value);
     }*/
     setSelectedContinent(value);
+    fetchCityJSONData();
   }
 
   return (
