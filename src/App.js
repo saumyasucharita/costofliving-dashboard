@@ -20,6 +20,7 @@ console.log('Starting front-end project');
 const [city_data, setCityData] = useState([]);
 const [cost_data, setCostData] = useState([]);
 const [selectedContinent, setSelectedContinent] = useState('Select');
+const [pageNo, setPageNo ] = useState(0);
 
 const yAxisLabels = []
 for (let i = 6000; i >= 500; i -= 500) {
@@ -36,16 +37,12 @@ function fetchCityJSONData() {
             return res.json();
         })
         .then((data) => {
-           //console.log(data);
-           //const first_10_cities = data.slice(0, 10);
            setCityData(data);
+           console.log('No of cities', data.length);
+           //setTotalItems(data.length); //Set total items for pagination
            const bar_height_data = setBarHeight(data);
            setCostData(bar_height_data);
-                    
-           /*const filteredData = data.filter(city => city.continent === selectedContinent);
-           console.log(`Filtered data for ${selectedContinent}`, filteredData.slice(0, 10)); */
-                  
-                    
+                        
         })
         .catch((error) => {
             console.error("Error fetching or parsing data:", error);
@@ -56,6 +53,7 @@ useEffect(() => {
         console.log('Page rendering starts');
         fetchCityJSONData();
     }, []);
+    
 function setBarHeight(jsonData){
    const bar_height_data = []
    for(let cityData of jsonData)
@@ -81,39 +79,44 @@ function setBarHeight(jsonData){
    console.log(bar_height_data);
    return bar_height_data;
 }
-/*useEffect(() => {
+/*useEffect((ev) => {
     if (selectedContinent !== 'Select') {
       // Filter JSON data based on selected continent
       const filtered = city_data.filter(obj => obj.continent === selectedContinent);
-      setCityData(filtered);
-      
+      console.log('No of cities in', ev.target.value, filtered.length);
       const new_bar_height = setBarHeight(filtered);
       setCostData(new_bar_height);
     } else {
-      setCityData([]);
+      setCostData([]);
     }
-  }, [selectedContinent]); */
+  }, [selectedContinent, city_data]); */
 function onContinentChange(ev) {
-    // Will be used by challenge 5
     const continent = ev.target.value;
     console.log('Continent selected', continent);
-    /*if (value === 'all') {
-      setLimitBy(false); // if "all" is selected, set to false
-    } else { // otherwise, just set with value
-      setLimitBy(value);
-    }*/
     setSelectedContinent(continent);
+    setPageNo(0); // Reset current page when continent changes
+    
     const filtered = city_data.filter(obj => obj.continent === continent);
-      
+    console.log('No of cities in', continent, filtered.length);
+    //setTotalItems(filtered.length);
+    
     const new_bar_height = setBarHeight(filtered);
     setCostData(new_bar_height);
+    //setCostData(new_bar_height.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
   }
+const onPageChange = (increment) => {
+    setPageNo(prevPageNo => prevPageNo + increment);
+  };
 
+// Calculate total number of pages dynamically
+ const totalPages = Math.ceil(cost_data.length / 10); 
+ 
   return (
  <div className="row">
    <h1>Cost of living in cities</h1>
    <label> Select Continent:
-          <select onChange={onContinentChange} value={selectedContinent}>
+   	{/* <select onChange={(event) => setSelectedContinent(event.target.value)} value={selectedContinent}> */}
+          <select onChange={onContinentChange} value={selectedContinent}> 
             <option value="Select">Select</option>
             {
             	continents.map(continent => (
@@ -141,7 +144,7 @@ function onContinentChange(ev) {
       <div className = "BarChart-stack barchart--food" style={{height: '28.06%'}}></div>
    </div>*/}
    {
-      	cost_data.map(city => (
+      	cost_data.slice(pageNo * 10, (pageNo + 1) * 10).map(city => (
       	<div className="BarChart-bar" style={{height: city.totalHeight+ "%"}}>
       	 <div className = "BarChart-stack barchart--apartment" style={{height: city.rentHeight+ "%"}}>
          <p className="barchart--label">{city.cityName}</p>
@@ -152,6 +155,14 @@ function onContinentChange(ev) {
    ))
    }
    </div>
+    
+
+  {/* Pagination */}
+  <div>
+  <button disabled={pageNo === 0} onClick={() => onPageChange(-1)}>Previous</button>
+  <span> Page {pageNo + 1} of {totalPages} </span>
+  <button disabled={pageNo === totalPages - 1} onClick={() => onPageChange(1)}>Next</button>
+  </div>
    
 
   <div className="Legend">
