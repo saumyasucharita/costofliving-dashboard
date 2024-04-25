@@ -39,7 +39,7 @@ function fetchCityJSONData() {
         .then((data) => {
            setCityData(data);
            console.log('No of cities', data.length);
-           //setTotalItems(data.length); //Set total items for pagination
+
            const bar_height_data = setBarHeight(data);
            setCostData(bar_height_data);
                         
@@ -68,6 +68,7 @@ function setBarHeight(jsonData){
 	entry.totalHeight = barHeight;
 	entry.rent = cityData['rent'];
 	entry.cityName = cityData['city'];
+	//entry.continent = cityData['continent'];
 	entry.rentHeight = parseFloat(cityData['rent'])/totalSum * 100;
 	entry.utilitiesHeight = parseFloat(cityData['utilities'])/totalSum * 100;
 	entry.foodHeight = parseFloat(cityData['meal']*60)/totalSum * 100;
@@ -98,11 +99,9 @@ function onContinentChange(ev) {
     
     const filtered = city_data.filter(obj => obj.continent === continent);
     console.log('No of cities in', continent, filtered.length);
-    //setTotalItems(filtered.length);
     
     const new_bar_height = setBarHeight(filtered);
     setCostData(new_bar_height);
-    //setCostData(new_bar_height.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
   }
 const onPageChange = (increment) => {
     setPageNo(prevPageNo => prevPageNo + increment);
