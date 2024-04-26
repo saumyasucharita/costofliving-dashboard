@@ -8,8 +8,7 @@ function App() {
 
     //State variables
     const [city_data, setCityData] = useState([]);
-    const [cost_data, setCostData] = useState([]);
-    const [selectedContinent, setSelectedContinent] = useState('Select');
+    const [selectedContinent, setSelectedContinent] = useState('Asia');
     const [pageNo, setPageNo] = useState(0);
 
     //Generate y-axis labels
@@ -38,14 +37,11 @@ function App() {
             setCityData(data);
             console.log('No of cities', data.length);
 
-            const bar_height_data = setBarHeight(data);
-            setCostData(bar_height_data);
-
         })
         .catch((error) => {
             console.error("Error fetching or parsing data:", error);
             throw error;
-        }); // Get the first 10 objects from the array
+        }); 
     }
 
     //This 'useEffect' hook runs only once when the component mounts
@@ -79,17 +75,6 @@ function App() {
         console.log(bar_height_data);
         return bar_height_data;
     }
-    /*useEffect((ev) => {
-    if (selectedContinent !== 'Select') {
-    // Filter JSON data based on selected continent
-    const filtered = city_data.filter(obj => obj.continent === selectedContinent);
-    console.log('No of cities in', ev.target.value, filtered.length);
-    const new_bar_height = setBarHeight(filtered);
-    setCostData(new_bar_height);
-    } else {
-    setCostData([]);
-    }
-    }, [selectedContinent, city_data]); */
 
     //Function for event- when the user selects a continent from the drop-down
     function onContinentChange(ev) {
@@ -98,12 +83,14 @@ function App() {
         setSelectedContinent(continent);
         setPageNo(0); // Reset current page when continent changes
 
-        const filtered = city_data.filter(obj => obj.continent === continent);
-        console.log('No of cities in', continent, filtered.length);
-
-        const new_bar_height = setBarHeight(filtered);
-        setCostData(new_bar_height);
+        
     }
+    
+    const filtered = city_data.filter(obj => obj.continent === selectedContinent);
+    console.log('No of cities in', selectedContinent, filtered.length);
+
+    const cost_data = setBarHeight(filtered);
+   // setCostData(new_bar_height);
 
     //Event - User clicks on either Previous or Next button to change the current page
     const onPageChange = (increment) => {
@@ -124,7 +111,7 @@ function App() {
             selectedContinent
         }
          >
-         < option value = "Select" > Select <  / option > {
+         {
             continents.map(continent => (
                      < option value = {
                         continent
