@@ -11,4 +11,3 @@ I am using the below columns from the csv file to calculate the total living exp
 
 The csv file is converted to a JSON file and read using fetch() method of JS and a stacked bar-chart is plotted by calculating the height of individual bars.
 
-![Screenshot](./img/Stacked_bar_chart.png)
