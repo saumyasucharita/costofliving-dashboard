@@ -1,8 +1,5 @@
-import React, {
-    useState,
-    useEffect
-}
-from 'react';
+import React, {useState, useEffect} from 'react';
+import ContinentSelector from './components/ContinentSelector/ContinentSelector';
 import './style.css';
 function App() {
 
@@ -17,7 +14,7 @@ function App() {
         yAxisLabels.push( < div className = "YAxis-label" > {
                 i
             }
-             <  / div > );
+             </div> );
     }
 
     //Hard-coded list of continents
@@ -101,102 +98,87 @@ function App() {
     const totalPages = Math.ceil(cost_data.length / 10);
 
     return (
-         < div className = "row" >
-             < h1 > Cost of living in cities <  / h1 >
-             < label > Select Continent:
-             < select onChange = {
-            onContinentChange
-        }
-        value = {
-            selectedContinent
-        }
-         >
-         {
-            continents.map(continent => (
-                     < option value = {
-                        continent
-                    }
-                     > {
-                    continent
-                }
-                     <  / option > ))
-        }
-         <  / select >
-         <  / label >
-         < div className = "BarChart" >
-             < div className = "YAxis" > {
+         <div className = "row">
+             <h1> Cost of living in cities </h1>
+             <ContinentSelector
+                continents = {continents}
+                selectedContinent = {selectedContinent}
+                onContinentChange = {onContinentChange}
+             />
+         <div className = "BarChart">
+             <div className = "YAxis"> {
             yAxisLabels
         }
-         <  / div > {
+         </div> {
         cost_data.slice(pageNo * 10, (pageNo + 1) * 10).map(city => (
-                 < div className = "BarChart-bar" style = { {
+                 <div className = "BarChart-bar" style = { {
                         height: city.totalHeight + "%"
                     }
                 }
                  >
-                 < div className = "BarChart-stack barchart--apartment" style = { {
+                 <div className = "BarChart-stack barchart--apartment" style = { {
                         height: city.rentHeight + "%"
                     }
                 }
                  >
-                 < p className = "barchart--label" > {
+                 <p className = "barchart--label" > {
                     city.cityName
                 }
-                 <  / p >
-                 <  / div >
-                 < div className = "BarChart-stack barchart--utilities" style = { {
+                 </p>
+                 </div>
+                 <div className = "BarChart-stack barchart--utilities" style = { {
                         height: city.utilitiesHeight + "%"
                     }
                 }
-                 >  <  / div >
-                 < div className = "BarChart-stack barchart--food" style = { {
+                 >  </div>
+                 <div className = "BarChart-stack barchart--food" style = { {
                         height: city.foodHeight + "%"
                     }
                 }
-                 >  <  / div >
-                 <  / div > ))
+                 >  </div>
+                 </div> ))
     }
-         <  / div > { /* Pagination */
+         </div> { /* Pagination */
     }
-         < div >
-         < button disabled = {
+         <div>
+         <button disabled = {
             pageNo === 0
         }
         onClick = {
             () => onPageChange(-1)
         }
-         > Previous <  / button >
-         < span > Page {
+         > Previous </button>
+         <span> Page {
         pageNo + 1
     }
         of {
         totalPages
     }
-         <  / span >
-         < button disabled = {
+         </span>
+         <button disabled = {
             pageNo === totalPages - 1
         }
         onClick = {
             () => onPageChange(1)
         }
-         > Next <  / button >
-         <  / div >
+         > Next </ button>
+         </div>
 
-         < div className = "Legend" >
-             < div className = "Legend-item" >
-             < div className = "Legend-color barchart--apartment" >  <  / div >
-             < p className = "Legend-label" > Apartment Rent <  / p >
-             <  / div >
-             < div className = "Legend-item" >
-             < div className = "Legend-color barchart--utilities" >  <  / div >
-             < p className = "Legend-label" > Utilities <  / p >
-             <  / div >
-             < div className = "Legend-item" >
-             < div className = "Legend-color barchart--food" >  <  / div >
-             < p className = "Legend-label" > Food <  / p >
-             <  / div >
-             <  / div >
-             <  / div > );
+         <div className = "Legend" >
+             <div className = "Legend-item" >
+             <div className = "Legend-color barchart--apartment" >  </div>
+             <p className = "Legend-label" > Apartment Rent </p>
+             </ div >
+             <div className = "Legend-item" >
+             <div className = "Legend-color barchart--utilities" >  </div>
+             <p className = "Legend-label" > Utilities </p>
+             </div>
+             <div className = "Legend-item" >
+             <div className = "Legend-color barchart--food" >  </div>
+             <p className = "Legend-label" > Food </p>
+             </div>
+             </div>
+             </div> );
 }
 
 export default App;
