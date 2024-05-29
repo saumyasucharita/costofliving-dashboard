@@ -1,4 +1,4 @@
-# stacked-bar-chart-react
+# costofliving-dashboard
 A React JS-based data visualization package to plot stacked bar charts.
 
 Dataset used: Global Cost of Living dataset from Kaggle <br/>
