@@ -1,0 +1,25 @@
+.Legend {
+    position: absolute;
+    top: 30px; 
+    right: 20px; 
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.Legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.Legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.Legend-label {
+    margin: 5px;
+}

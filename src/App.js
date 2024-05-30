@@ -1,21 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import ContinentSelector from './components/ContinentSelector/ContinentSelector';
+import BarChart from './components/BarChart/BarChart';
+import Pagination from './components/Pagination/Pagination';
+import Legend from './components/Legend/Legend';
 import './style.css';
+
 function App() {
 
     //State variables
     const [city_data, setCityData] = useState([]);
     const [selectedContinent, setSelectedContinent] = useState('Asia');
     const [pageNo, setPageNo] = useState(0);
-
-    //Generate y-axis labels
-    const yAxisLabels = []
-    for (let i = 6000; i >= 500; i -= 500) {
-        yAxisLabels.push( < div className = "YAxis-label" > {
-                i
-            }
-             </div> );
-    }
 
     //Hard-coded list of continents
     const continents = ["Asia", "Europe", "Africa", "North America", "South America", "Oceania"];
@@ -82,12 +77,10 @@ function App() {
 
         
     }
-    
     const filtered = city_data.filter(obj => obj.continent === selectedContinent);
     console.log('No of cities in', selectedContinent, filtered.length);
 
     const cost_data = setBarHeight(filtered);
-   // setCostData(new_bar_height);
 
     //Event - User clicks on either Previous or Next button to change the current page
     const onPageChange = (increment) => {
@@ -105,80 +98,19 @@ function App() {
                 selectedContinent = {selectedContinent}
                 onContinentChange = {onContinentChange}
              />
-         <div className = "BarChart">
-             <div className = "YAxis"> {
-            yAxisLabels
-        }
-         </div> {
-        cost_data.slice(pageNo * 10, (pageNo + 1) * 10).map(city => (
-                 <div className = "BarChart-bar" style = { {
-                        height: city.totalHeight + "%"
-                    }
-                }
-                 >
-                 <div className = "BarChart-stack barchart--apartment" style = { {
-                        height: city.rentHeight + "%"
-                    }
-                }
-                 >
-                 <p className = "barchart--label" > {
-                    city.cityName
-                }
-                 </p>
-                 </div>
-                 <div className = "BarChart-stack barchart--utilities" style = { {
-                        height: city.utilitiesHeight + "%"
-                    }
-                }
-                 >  </div>
-                 <div className = "BarChart-stack barchart--food" style = { {
-                        height: city.foodHeight + "%"
-                    }
-                }
-                 >  </div>
-                 </div> ))
-    }
-         </div> { /* Pagination */
-    }
-         <div>
-         <button disabled = {
-            pageNo === 0
-        }
-        onClick = {
-            () => onPageChange(-1)
-        }
-         > Previous </button>
-         <span> Page {
-        pageNo + 1
-    }
-        of {
-        totalPages
-    }
-         </span>
-         <button disabled = {
-            pageNo === totalPages - 1
-        }
-        onClick = {
-            () => onPageChange(1)
-        }
-         > Next </ button>
-         </div>
+            <BarChart 
+                cost_data = {cost_data}
+                pageNo = {pageNo}
+            />
+            { /* Pagination */}
+            <Pagination
+                pageNo = {pageNo}
+                onPageChange = {onPageChange}
+                totalPages = {totalPages}
+            />
+            <Legend />
 
-         <div className = "Legend" >
-             <div className = "Legend-item" >
-             <div className = "Legend-color barchart--apartment" >  </div>
-             <p className = "Legend-label" > Apartment Rent </p>
-             </ div >
-             <div className = "Legend-item" >
-             <div className = "Legend-color barchart--utilities" >  </div>
-             <p className = "Legend-label" > Utilities </p>
-             </div>
-             <div className = "Legend-item" >
-             <div className = "Legend-color barchart--food" >  </div>
-             <p className = "Legend-label" > Food </p>
-             </div>
-             </div>
-             </div> );
+        </div> );
 }
 
 export default App;

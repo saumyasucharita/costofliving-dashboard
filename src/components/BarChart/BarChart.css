@@ -1,0 +1,63 @@
+.BarChart {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 80%;
+    margin: 0 auto;
+    height: 300px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.YAxis {
+    display: flex;
+    flex-direction: column;
+    padding-right: 5px; 
+    border-right: 5px solid #000; /* Add border for the y-axis */
+	height: 100%;
+}
+.YAxis-label {
+	position: relative; 
+	display: block; 
+	flex-grow: 1;
+	font-weight: bold;
+}
+.YAxis-label::before { 
+	content: '-';
+	position: absolute; 
+	width: 10px;
+	align-items: center;
+    padding-left: 15px; 
+    right: -10px;
+ }
+.BarChart-bar {
+    flex: 1;
+   /* display: flex; */
+   /* flex-direction : column; */
+    flex-grow: 1;
+    background-color: #007acc;
+    transition: height 0.5s;
+    margin-right: 10px;
+    
+}
+.BarChart-bar:last-child{
+	margin: 0;
+}
+.BarChart-stack{
+ 	box-shadow: 10px 10px 15px inset #00000033;
+ }
+.barchart--apartment{
+	background-color: #8DDFCB;
+}
+.barchart--utilities{
+	background-color: #82A0D8;
+}
+.barchart--food{
+	background-color: #EDB7ED;
+}
+.barchart--label{
+    text-align: center;
+    margin: 0;
+    padding: 5px; /* Adjust the padding as needed for spacing */
+    font-weight: bold;
+}
